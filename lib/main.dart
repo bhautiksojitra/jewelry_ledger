@@ -44,13 +44,14 @@ class _HomePageState extends State<HomePage> {
     'View History',
   ];
   final List<Widget> _pages = [
-    const AddRecordPage(),
+    AddRecordsPage(),
     const ActiveRecordsPage(),
     const HistoryPage()
   ];
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(_titles[_currentIndex]), // Dynamic title based on tab

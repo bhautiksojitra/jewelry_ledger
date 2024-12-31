@@ -1,10 +1,30 @@
 {
   "project_info": {
     "project_number": "536721750046",
+    "firebase_url": "https://silver-track-project-default-rtdb.firebaseio.com",
     "project_id": "silver-track-project",
     "storage_bucket": "silver-track-project.firebasestorage.app"
   },
   "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536721750046:android:7ab5911d9ef74c4c3a160f",
+        "android_client_info": {
+          "package_name": "com.example.jewelry_ledger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzb3WDVsINcHUhef0LfAfjH9PG2xKPw58"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:536721750046:android:6a8cff3a97a247763a160f",

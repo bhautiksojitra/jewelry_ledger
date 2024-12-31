@@ -46,6 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '536721750046',
     projectId: 'silver-track-project',
     authDomain: 'silver-track-project.firebaseapp.com',
+    databaseURL: 'https://silver-track-project-default-rtdb.firebaseio.com',
     storageBucket: 'silver-track-project.firebasestorage.app',
   );
 
@@ -54,6 +55,7 @@ class DefaultFirebaseOptions {
     appId: '1:536721750046:android:6a8cff3a97a247763a160f',
     messagingSenderId: '536721750046',
     projectId: 'silver-track-project',
+    databaseURL: 'https://silver-track-project-default-rtdb.firebaseio.com',
     storageBucket: 'silver-track-project.firebasestorage.app',
   );
 
@@ -62,6 +64,7 @@ class DefaultFirebaseOptions {
     appId: '1:536721750046:ios:58273cb57707d1ab3a160f',
     messagingSenderId: '536721750046',
     projectId: 'silver-track-project',
+    databaseURL: 'https://silver-track-project-default-rtdb.firebaseio.com',
     storageBucket: 'silver-track-project.firebasestorage.app',
     iosBundleId: 'com.example.jewelryLedger',
   );
@@ -71,6 +74,7 @@ class DefaultFirebaseOptions {
     appId: '1:536721750046:ios:58273cb57707d1ab3a160f',
     messagingSenderId: '536721750046',
     projectId: 'silver-track-project',
+    databaseURL: 'https://silver-track-project-default-rtdb.firebaseio.com',
     storageBucket: 'silver-track-project.firebasestorage.app',
     iosBundleId: 'com.example.jewelryLedger',
   );
@@ -81,6 +85,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '536721750046',
     projectId: 'silver-track-project',
     authDomain: 'silver-track-project.firebaseapp.com',
+    databaseURL: 'https://silver-track-project-default-rtdb.firebaseio.com',
     storageBucket: 'silver-track-project.firebasestorage.app',
   );
 
