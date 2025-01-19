@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jewelry_ledger/components/dropdown.dart';
+import 'package:jewelry_ledger/components/record_entry_form.dart';
 import 'package:jewelry_ledger/databases/helper.dart';
 import 'package:intl/intl.dart';
 import 'package:quiver/strings.dart';
@@ -101,109 +102,13 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
           label: "Select a name",
           onChanged: onDropdownChanged,
         )),
-        if (isWidgetVisible) const SizedBox(height: 50),
         if (isWidgetVisible)
-          SizedBox(
-            width: 300,
-            child: TextField(
-                controller: dateController,
-                decoration: InputDecoration(
-                  icon: const Icon(Icons.calendar_today),
-                  labelText: "Enter Date",
-                  border: OutlineInputBorder(
-                    // Border all around
-                    borderRadius:
-                        BorderRadius.circular(8.0), // Optional rounded corners
-                  ),
-                ),
-                readOnly: true,
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(), //get today's date
-                      firstDate: DateTime(
-                          2000), //DateTime.now() - not to allow to choose before today.
-                      lastDate: DateTime(2101));
-                  if (pickedDate != null) {
-                    String formattedDate = DateFormat('yyyy-MM-dd').format(
-                        pickedDate); // format date in required form here we use yyyy-MM-dd that means time is remove
-                    setState(() {
-                      dateController.text =
-                          formattedDate; //set foratted date to TextField value.
-                    });
-                  }
-                }),
-          ),
-        if (isWidgetVisible) const SizedBox(height: 20),
-        if (isWidgetVisible)
-          SizedBox(
-              width: 340,
-              child: TextField(
-                controller: granularController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "How much Granular?",
-                  border: OutlineInputBorder(
-                    // Border all around
-                    borderRadius:
-                        BorderRadius.circular(8.0), // Optional rounded corners
-                  ),
-                ),
-                inputFormatters: <TextInputFormatter>[
-                  CustomRangeTextInputFormatter(0, 20),
-                  FilteringTextInputFormatter.digitsOnly
-                ],
-              )),
-        if (isWidgetVisible) const SizedBox(height: 20),
-        if (isWidgetVisible)
-          SizedBox(
-              width: 340,
-              child: TextField(
-                controller: weightController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "Enter Weight in Grams (Limit 4 Digits)",
-                  border: OutlineInputBorder(
-                    // Border all around
-                    borderRadius:
-                        BorderRadius.circular(8.0), // Optional rounded corners
-                  ),
-                ),
-                inputFormatters: <TextInputFormatter>[
-                  LengthLimitingTextInputFormatter(4),
-                  FilteringTextInputFormatter.digitsOnly
-                ],
-              )),
-        if (isWidgetVisible) const SizedBox(height: 30),
-        if (isWidgetVisible)
-          ElevatedButton(
-              onPressed: onQueryDatabaseClicked,
-              child: const Text('Query Database')),
+          RecordsEntryForm(
+              dateFieldController: dateController,
+              weightFieldController: weightController,
+              granularFieldController: granularController,
+              onQueryDatabase: onQueryDatabaseClicked)
       ],
     ));
-  }
-}
-
-class CustomRangeTextInputFormatter extends TextInputFormatter {
-  final int min;
-  final int max;
-
-  CustomRangeTextInputFormatter(this.min, this.max);
-
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    if (newValue.text.isEmpty) {
-      return newValue;
-    }
-
-    final int? value = int.tryParse(newValue.text);
-    if (value == null || value < min || value > max) {
-      // If the value is invalid, revert to the old value
-      return oldValue;
-    }
-
-    // Otherwise, allow the new value
-    return newValue;
   }
 }
