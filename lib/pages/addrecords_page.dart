@@ -32,10 +32,8 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
   @override
   void initState() {
     super.initState();
-    //fetchPersons();
-    setState(() {
-      list = ["hello"];
-    });
+    fetchPersons();
+    setState(() {});
   }
 
   Future<void> fetchPersons() async {
@@ -84,7 +82,9 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
           Icons.dangerous_rounded,
           Colors.red);
     } else {
-      _showMyDialog("Success", "You are done!", Icons.check_box, Colors.green);
+      _firebaseService.addRecord("tempname", dateController.text,
+          weightController.text, granularController.text);
+      //_showMyDialog("Success", "You are done!", Icons.check_box, Colors.green);
       // TO DO : add to database
     }
   }
