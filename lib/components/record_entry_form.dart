@@ -104,7 +104,7 @@ class _RecordsEntryFormState extends State<RecordsEntryForm> {
         const SizedBox(height: 30),
         ElevatedButton(
             onPressed: widget.onQueryDatabase,
-            child: const Text('Query Database')),
+            child: const Text('Validate Record')),
       ],
     );
   }

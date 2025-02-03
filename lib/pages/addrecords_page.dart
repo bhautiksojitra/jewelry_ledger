@@ -6,6 +6,7 @@ import 'package:jewelry_ledger/components/record_entry_form.dart';
 import 'package:jewelry_ledger/databases/helper.dart';
 import 'package:intl/intl.dart';
 import 'package:quiver/strings.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddRecordsPage extends StatefulWidget {
   const AddRecordsPage({super.key});
@@ -18,6 +19,7 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
   List<String> list = ["hello"];
   final FirebaseService _firebaseService = FirebaseService();
   bool isWidgetVisible = false;
+  String selectedName = "";
   TextEditingController dateController = TextEditingController(
       text: DateFormat('yyyy-MM-dd').format(DateTime.now()));
   TextEditingController weightController = TextEditingController();
@@ -26,6 +28,7 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
   void onDropdownChanged(String? value) {
     setState(() {
       isWidgetVisible = value != null;
+      selectedName = value!;
     });
   }
 
@@ -45,9 +48,14 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
     });
   }
 
-  Future<void> _showMyDialog(String titleText, String contentText,
-      IconData iconData, Color iconColor) async {
-    return showDialog<void>(
+  Future<String?> _showMyDialog(
+      String titleText,
+      String contentText,
+      IconData iconData,
+      Color iconColor,
+      String option1,
+      String option2) async {
+    return showDialog<String>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
@@ -60,10 +68,16 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
           ),
           content: Text(contentText),
           actions: <Widget>[
-            ElevatedButton(
-              child: const Text('Close'),
+            TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(option1);
+              },
+              child: Text(option1),
+            ),
+            ElevatedButton(
+              child: Text(option2),
+              onPressed: () {
+                Navigator.of(context).pop(option2);
               },
             ),
           ],
@@ -78,15 +92,52 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
         isBlank(granularController.text)) {
       _showMyDialog(
           "Empty Field",
-          "At least one of the entries is empty or invalid",
+          "At least one of the entries is empty or invalid.",
           Icons.dangerous_rounded,
-          Colors.red);
+          Colors.red,
+          "",
+          "Ok");
     } else {
-      _firebaseService.addRecord("tempname", dateController.text,
-          weightController.text, granularController.text);
-      //_showMyDialog("Success", "You are done!", Icons.check_box, Colors.green);
-      // TO DO : add to database
+      var returnValue = await _showMyDialog("Success", "All entries are valid.",
+          Icons.check_box, Colors.green, "Cancel", "Add");
+
+      if (returnValue == "Add" && !isBlank(selectedName)) {
+        bool isRecordAdded = await _firebaseService.addRecord(
+            selectedName,
+            dateController.text,
+            weightController.text,
+            granularController.text);
+
+        if (isRecordAdded) {
+          resetEntryFields();
+          Fluttertoast.showToast(
+            msg: "SUCCESS!",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM_LEFT,
+            timeInSecForIosWeb: 2,
+            backgroundColor: const Color.fromARGB(168, 187, 234, 166),
+            textColor: Colors.black,
+            fontSize: 16.0,
+          );
+          return;
+        }
+      }
+
+      Fluttertoast.showToast(
+        msg: "FAILURE!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM_LEFT,
+        timeInSecForIosWeb: 2,
+        backgroundColor: const Color.fromARGB(168, 247, 210, 210),
+        textColor: Colors.black,
+        fontSize: 16.0,
+      );
     }
+  }
+
+  void resetEntryFields() {
+    weightController.text = "";
+    granularController.text = "";
   }
 
   @override

@@ -29,35 +29,27 @@ class FirebaseService {
   Future<bool> addRecord(
       String personName, String date, String weight, String granular) async {
     try {
-      final usersListSnapshot = await _database.child('UsersList').get();
+      final lastIdRef = _database.child("RecordDetails/$personName/lastId");
+      final lastIdSnapshot = await lastIdRef.get();
+      int lastId = lastIdSnapshot.exists ? lastIdSnapshot.value as int : 0;
 
-      // if (usersListSnapshot.exists) {
-      //   final data = Map<String, dynamic>.from(usersListSnapshot.value as Map);
-      //   var usersList = data.values
-      //       .map((person) => Map<String, dynamic>.from(person))
-      //       .toList();
-      //   if (!usersList.contains(personName)) {
-      //     throw Exception('Person "$personName" does not exist in UsersList.');
-      //   }
-      // } else {
-      //   throw Exception('UsersList does not exist.');
-      // }
+      int newId = lastId + 1;
+      final recordRef = _database.child('RecordDetails/$personName/$newId');
 
-      final personRecordsRef = _database.child('RecordDetails/$personName');
-      final newRecordRef =
-          personRecordsRef.push(); // Generates a unique key for the new record
-
-      await newRecordRef.set({
+      await recordRef.set({
         "sentdate": date,
         "weight": weight,
         "granular": granular,
         "status": "sent"
       });
 
+      await lastIdRef.set(newId);
+
       print('Record added successfully for $personName');
+      return true;
     } catch (e) {
       print("Error adding record: $e");
+      return false;
     }
-    return false;
   }
 }
