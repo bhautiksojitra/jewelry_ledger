@@ -5,6 +5,7 @@ import 'package:jewelry_ledger/components/dropdown.dart';
 import 'package:jewelry_ledger/components/record_entry_form.dart';
 import 'package:jewelry_ledger/databases/helper.dart';
 import 'package:intl/intl.dart';
+import 'package:jewelry_ledger/datamodels/RecordModel.dart';
 import 'package:quiver/strings.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -16,7 +17,7 @@ class AddRecordsPage extends StatefulWidget {
 }
 
 class _AddRecordsPageState extends State<AddRecordsPage> {
-  List<String> list = ["hello"];
+  List<String> list = [];
   final FirebaseService _firebaseService = FirebaseService();
   bool isWidgetVisible = false;
   String selectedName = "";
@@ -36,15 +37,13 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
   void initState() {
     super.initState();
     fetchPersons();
-    setState(() {});
   }
 
   Future<void> fetchPersons() async {
-    final fetchedPersons = await _firebaseService.fetchPersons();
+    final fetchedPersons = await _firebaseService.fetchUsers();
 
     setState(() {
-      var persons = fetchedPersons;
-      list = persons.map((person) => person['name'] as String).toList();
+      list = fetchedPersons;
     });
   }
 
@@ -102,24 +101,31 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
           Icons.check_box, Colors.green, "Cancel", "Add");
 
       if (returnValue == "Add" && !isBlank(selectedName)) {
-        bool isRecordAdded = await _firebaseService.addRecord(
-            selectedName,
-            dateController.text,
-            weightController.text,
-            granularController.text);
+        try {
+          var recordToAdd = Recordmodel(
+              granular: int.parse(granularController.text),
+              sentdate: DateTime.parse(dateController.text),
+              status: "Sent",
+              weight: int.parse(weightController.text));
 
-        if (isRecordAdded) {
-          resetEntryFields();
-          Fluttertoast.showToast(
-            msg: "SUCCESS!",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM_LEFT,
-            timeInSecForIosWeb: 2,
-            backgroundColor: const Color.fromARGB(168, 187, 234, 166),
-            textColor: Colors.black,
-            fontSize: 16.0,
-          );
-          return;
+          bool isRecordAdded =
+              await _firebaseService.addRecord(selectedName, recordToAdd);
+
+          if (isRecordAdded) {
+            resetEntryFields();
+            Fluttertoast.showToast(
+              msg: "SUCCESS!",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM_LEFT,
+              timeInSecForIosWeb: 2,
+              backgroundColor: const Color.fromARGB(168, 187, 234, 166),
+              textColor: Colors.black,
+              fontSize: 16.0,
+            );
+            return;
+          }
+        } catch (e) {
+          print("Exception occured.. this should not happen ever ");
         }
       }
 
