@@ -19,31 +19,18 @@ class AddRecordsPage extends StatefulWidget {
 }
 
 class _AddRecordsPageState extends State<AddRecordsPage> {
-  final FirebaseService _firebaseService = FirebaseService();
-  bool isWidgetVisible = false;
   TextEditingController dateController = TextEditingController(
       text: DateFormat('yyyy-MM-dd').format(DateTime.now()));
   TextEditingController weightController = TextEditingController();
   TextEditingController granularController = TextEditingController();
 
   void onDropdownChanged(String? value) {
-    setState(() {
-      isWidgetVisible = value != null;
-      Provider.of<UsersModel>(context, listen: false)
-          .updateSelectedUser(value!);
-    });
+    Provider.of<UsersModel>(context, listen: false).updateSelectedUser(value!);
   }
 
   @override
   void initState() {
     super.initState();
-    fetchPersons();
-  }
-
-  Future<void> fetchPersons() async {
-    final fetchedPersons = await _firebaseService.fetchUsers();
-    Provider.of<UsersModel>(context, listen: false)
-        .updatedUsersList(fetchedPersons);
   }
 
   Future<String?> _showMyDialog(
@@ -107,7 +94,8 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
               status: "Sent",
               weight: int.parse(weightController.text));
 
-          bool isRecordAdded = await _firebaseService.addRecord(
+          var firebaseService = FirebaseService();
+          bool isRecordAdded = await firebaseService.addRecord(
               UsersModel().SelectedUser, recordToAdd);
 
           if (isRecordAdded) {
@@ -161,12 +149,11 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
             onChanged: onDropdownChanged,
           ),
         )),
-        if (isWidgetVisible)
-          RecordsEntryForm(
-              dateFieldController: dateController,
-              weightFieldController: weightController,
-              granularFieldController: granularController,
-              onQueryDatabase: onQueryDatabaseClicked)
+        RecordsEntryForm(
+            dateFieldController: dateController,
+            weightFieldController: weightController,
+            granularFieldController: granularController,
+            onQueryDatabase: onQueryDatabaseClicked)
       ],
     ));
   }

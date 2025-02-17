@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:jewelry_ledger/databases/helper.dart';
 import 'package:jewelry_ledger/datamodels/UsersModel.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -44,6 +45,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0; // Tracks the selected tab index
+  final FirebaseService _firebaseService = FirebaseService();
   // Titles for each tab
   final List<String> _titles = [
     'Add Records',
@@ -55,6 +57,18 @@ class _HomePageState extends State<HomePage> {
     const ActiveRecordsPage(),
     const HistoryPage()
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPersons();
+  }
+
+  Future<void> fetchPersons() async {
+    final fetchedPersons = await _firebaseService.fetchUsers();
+    Provider.of<UsersModel>(context, listen: false)
+        .updatedUsersList(fetchedPersons);
+  }
 
   @override
   Widget build(BuildContext context) {

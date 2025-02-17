@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:jewelry_ledger/datamodels/RecordModel.dart';
+import 'package:quiver/strings.dart';
 
 class FirebaseService {
   final DatabaseReference _database = FirebaseDatabase.instance.ref();
@@ -20,6 +21,11 @@ class FirebaseService {
   }
 
   Future<bool> addRecord(String personName, Recordmodel newValue) async {
+    if (isBlank(personName)) {
+      print("No person selected");
+      return false;
+    }
+
     try {
       // reference to last id info
       final lastIdRef = _database.child("RecordDetails/$personName/lastId");

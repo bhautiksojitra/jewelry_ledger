@@ -13,33 +13,13 @@ class ActiveRecordsPage extends StatefulWidget {
 }
 
 class _ActiveRecordsPageState extends State<ActiveRecordsPage> {
-  listenOnDBChange() {
-    DatabaseReference _usersListRef =
-        FirebaseDatabase.instance.ref("UsersList");
-
-    _usersListRef.onValue.listen((event) {
-      print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-      final data = Map<String, dynamic>.from(event.snapshot.value as Map);
-
-      print(data);
-      setState(() {
-        var x =
-            data.values.map((item) => Map<String, dynamic>.from(item)).toList();
-        _items = x.map((person) => person['name'] as String).toList();
-      });
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    //listenOnDBChange();
   }
 
-  List<String> _items = [];
-
   void onDropdownChanged(String? value) {
-    print("Hello world");
+    Provider.of<UsersModel>(context, listen: false).updateSelectedUser(value!);
   }
 
   @override

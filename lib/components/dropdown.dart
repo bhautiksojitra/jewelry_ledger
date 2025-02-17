@@ -46,9 +46,6 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample> {
             width: finalWidth,
             initialSelection: widget.initSelect,
             onSelected: (String? value) {
-              //setState(() {
-              //  selectedValue = value!;
-              //});
               widget.onChanged(value);
             },
             dropdownMenuEntries:
