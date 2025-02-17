@@ -1,5 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:jewelry_ledger/components/dropdown.dart';
+import 'package:jewelry_ledger/datamodels/UsersModel.dart';
+import 'package:provider/provider.dart';
 
 // Active Records Page
 class ActiveRecordsPage extends StatefulWidget {
@@ -30,28 +33,32 @@ class _ActiveRecordsPageState extends State<ActiveRecordsPage> {
   @override
   void initState() {
     super.initState();
-    listenOnDBChange();
+    //listenOnDBChange();
   }
 
   List<String> _items = [];
 
+  void onDropdownChanged(String? value) {
+    print("Hello world");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ListView.builder(
-          itemCount: _items.length, // Number of items in the list
-          itemBuilder: (context, index) {
-            return Container(
-              color: index % 2 == 0 ? Colors.red : Colors.blue,
-              height: 100,
-              child: Center(
-                child: Text(_items[index]),
-              ),
-            );
-          },
-        ),
-      ),
-    );
+        body: Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Center(
+            child: Consumer<UsersModel>(
+          builder: (context, value, child) => DropdownMenuExample(
+            label: "Select a name",
+            items: value.Users,
+            initSelect: value.SelectedUser,
+            onChanged: onDropdownChanged,
+          ),
+        )),
+      ],
+    ));
   }
 }

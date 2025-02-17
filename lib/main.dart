@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:jewelry_ledger/datamodels/UsersModel.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -13,7 +15,12 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseDatabase database = FirebaseDatabase.instance;
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UsersModel(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -37,7 +44,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0; // Tracks the selected tab index
-   // Titles for each tab
+  // Titles for each tab
   final List<String> _titles = [
     'Add Records',
     'View Active Records',
@@ -51,7 +58,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         title: Text(_titles[_currentIndex]), // Dynamic title based on tab
@@ -86,8 +92,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
-
-
-

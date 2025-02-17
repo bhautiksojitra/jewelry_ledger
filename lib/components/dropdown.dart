@@ -2,22 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:jewelry_ledger/databases/helper.dart';
 
 class DropdownMenuExample extends StatefulWidget {
-  
   final List<String> items;
   final String label;
   final ValueChanged<String?> onChanged;
-  
-  DropdownMenuExample({super.key, required this.items, required this.label, required this.onChanged});
+  final String initSelect;
+
+  DropdownMenuExample(
+      {super.key,
+      required this.items,
+      required this.label,
+      required this.initSelect,
+      required this.onChanged});
 
   @override
   State<DropdownMenuExample> createState() => _DropdownMenuExampleState();
 }
 
-class _DropdownMenuExampleState extends State<DropdownMenuExample>
-{
-  late String selectedValue;
+class _DropdownMenuExampleState extends State<DropdownMenuExample> {
+  //late String selectedValue;
 
-   @override
+  @override
   void initState() {
     super.initState();
   }
@@ -36,22 +40,24 @@ class _DropdownMenuExampleState extends State<DropdownMenuExample>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 20),
-        SizedBox(child: DropdownMenu<String>(
-                label: Text(widget.label),
-                width: finalWidth,
-                onSelected: (String? value) {
-                  setState(() {
-                    selectedValue = value!;
-                  });
-                  widget.onChanged(value);
-                },
-                dropdownMenuEntries: widget.items.map<DropdownMenuEntry<String>>((String value) {
-                  return DropdownMenuEntry<String>(value: value, label: value);
-                }).toList(),
-    ),
-    )
+        SizedBox(
+          child: DropdownMenu<String>(
+            label: Text(widget.label),
+            width: finalWidth,
+            initialSelection: widget.initSelect,
+            onSelected: (String? value) {
+              //setState(() {
+              //  selectedValue = value!;
+              //});
+              widget.onChanged(value);
+            },
+            dropdownMenuEntries:
+                widget.items.map<DropdownMenuEntry<String>>((String value) {
+              return DropdownMenuEntry<String>(value: value, label: value);
+            }).toList(),
+          ),
+        )
       ],
-    )
-      ;
+    );
   }
 }

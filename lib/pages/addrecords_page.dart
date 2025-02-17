@@ -6,6 +6,8 @@ import 'package:jewelry_ledger/components/record_entry_form.dart';
 import 'package:jewelry_ledger/databases/helper.dart';
 import 'package:intl/intl.dart';
 import 'package:jewelry_ledger/datamodels/RecordModel.dart';
+import 'package:jewelry_ledger/datamodels/UsersModel.dart';
+import 'package:provider/provider.dart';
 import 'package:quiver/strings.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -17,10 +19,8 @@ class AddRecordsPage extends StatefulWidget {
 }
 
 class _AddRecordsPageState extends State<AddRecordsPage> {
-  List<String> list = [];
   final FirebaseService _firebaseService = FirebaseService();
   bool isWidgetVisible = false;
-  String selectedName = "";
   TextEditingController dateController = TextEditingController(
       text: DateFormat('yyyy-MM-dd').format(DateTime.now()));
   TextEditingController weightController = TextEditingController();
@@ -29,7 +29,8 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
   void onDropdownChanged(String? value) {
     setState(() {
       isWidgetVisible = value != null;
-      selectedName = value!;
+      Provider.of<UsersModel>(context, listen: false)
+          .updateSelectedUser(value!);
     });
   }
 
@@ -41,10 +42,8 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
 
   Future<void> fetchPersons() async {
     final fetchedPersons = await _firebaseService.fetchUsers();
-
-    setState(() {
-      list = fetchedPersons;
-    });
+    Provider.of<UsersModel>(context, listen: false)
+        .updatedUsersList(fetchedPersons);
   }
 
   Future<String?> _showMyDialog(
@@ -100,7 +99,7 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
       var returnValue = await _showMyDialog("Success", "All entries are valid.",
           Icons.check_box, Colors.green, "Cancel", "Add");
 
-      if (returnValue == "Add" && !isBlank(selectedName)) {
+      if (returnValue == "Add" && !isBlank(UsersModel().SelectedUser)) {
         try {
           var recordToAdd = Recordmodel(
               granular: int.parse(granularController.text),
@@ -108,8 +107,8 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
               status: "Sent",
               weight: int.parse(weightController.text));
 
-          bool isRecordAdded =
-              await _firebaseService.addRecord(selectedName, recordToAdd);
+          bool isRecordAdded = await _firebaseService.addRecord(
+              UsersModel().SelectedUser, recordToAdd);
 
           if (isRecordAdded) {
             resetEntryFields();
@@ -154,10 +153,13 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Center(
-            child: DropdownMenuExample(
-          items: list,
-          label: "Select a name",
-          onChanged: onDropdownChanged,
+            child: Consumer<UsersModel>(
+          builder: (context, value, child) => DropdownMenuExample(
+            label: "Select a name",
+            items: value.Users,
+            initSelect: value.SelectedUser,
+            onChanged: onDropdownChanged,
+          ),
         )),
         if (isWidgetVisible)
           RecordsEntryForm(
