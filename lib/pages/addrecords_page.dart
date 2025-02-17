@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -86,6 +88,8 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
       var returnValue = await _showMyDialog("Success", "All entries are valid.",
           Icons.check_box, Colors.green, "Cancel", "Add");
 
+      log("hello world!");
+
       if (returnValue == "Add" && !isBlank(UsersModel().SelectedUser)) {
         try {
           var recordToAdd = Recordmodel(
@@ -95,6 +99,7 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
               weight: int.parse(weightController.text));
 
           var firebaseService = FirebaseService();
+
           bool isRecordAdded = await firebaseService.addRecord(
               UsersModel().SelectedUser, recordToAdd);
 

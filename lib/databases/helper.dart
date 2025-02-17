@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:jewelry_ledger/datamodels/RecordModel.dart';
 import 'package:quiver/strings.dart';
@@ -21,8 +23,10 @@ class FirebaseService {
   }
 
   Future<bool> addRecord(String personName, Recordmodel newValue) async {
+    print("Ia m here");
     if (isBlank(personName)) {
       print("No person selected");
+      log("No person selected");
       return false;
     }
 
