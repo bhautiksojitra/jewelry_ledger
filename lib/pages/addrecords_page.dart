@@ -88,8 +88,6 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
       var returnValue = await _showMyDialog("Success", "All entries are valid.",
           Icons.check_box, Colors.green, "Cancel", "Add");
 
-      log("hello world!");
-
       if (returnValue == "Add" && !isBlank(UsersModel().SelectedUser)) {
         try {
           var recordToAdd = Recordmodel(

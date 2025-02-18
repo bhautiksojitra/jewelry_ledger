@@ -51,4 +51,28 @@ class FirebaseService {
       return false;
     }
   }
+
+  Future<List<String>> getRecordsByUserName(String userName) async {
+    try {
+      final records = _database.child("RecordDetails/$userName");
+      final recordsSnapshot = await records.get();
+
+      if (recordsSnapshot.exists) {
+        var recordsList =
+            Map<String, dynamic>.from(recordsSnapshot.value as Map);
+        List<String> retList = [];
+        log(recordsList.toString());
+
+        recordsList.forEach((key, value) {
+          retList.add(value.toString());
+        });
+
+        return retList;
+      }
+    } catch (e) {
+      log("Exception occured while getting records list");
+    }
+
+    return [];
+  }
 }
