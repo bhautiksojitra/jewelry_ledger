@@ -52,7 +52,7 @@ class FirebaseService {
     }
   }
 
-  Future<List<String>> getRecordsByUserName(String userName) async {
+  Future<List<Recordmodel>> getRecordsByUserName(String userName) async {
     try {
       final records = _database.child("RecordDetails/$userName");
       final recordsSnapshot = await records.get();
@@ -60,12 +60,21 @@ class FirebaseService {
       if (recordsSnapshot.exists) {
         var recordsList =
             Map<String, dynamic>.from(recordsSnapshot.value as Map);
-        List<String> retList = [];
-        log(recordsList.toString());
+        List<Recordmodel> retList = [];
 
         recordsList.forEach((key, value) {
-          retList.add(value.toString());
+          //log(Recordmodel.fromJson(value).toString());
+          if (key == "lastId") {
+            log("hello");
+          } else {
+            log(value.toString());
+            log(value.runtimeType.toString());
+            var v = Map<String, dynamic>.from(value as Map);
+            log("v");
+            retList.add(Recordmodel.fromJson(v));
+          }
         });
+        //log(recordsList.toString());
 
         return retList;
       }

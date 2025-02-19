@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:jewelry_ledger/components/dropdown.dart';
 import 'package:jewelry_ledger/components/record_card.dart';
 import 'package:jewelry_ledger/databases/helper.dart';
+import 'package:jewelry_ledger/datamodels/RecordModel.dart';
 import 'package:jewelry_ledger/datamodels/UsersModel.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,7 @@ class ActiveRecordsPage extends StatefulWidget {
 
 class _ActiveRecordsPageState extends State<ActiveRecordsPage> {
   final FirebaseService _firebaseService = FirebaseService();
-  List<String> list = [];
+  List<Recordmodel> list = [];
   @override
   void initState() {
     super.initState();
@@ -63,11 +64,16 @@ class _ActiveRecordsPageState extends State<ActiveRecordsPage> {
             onChanged: onDropdownChanged,
           ),
         )),
+
         Expanded(
           child: ListView.builder(
             itemCount: list.length,
             itemBuilder: (content, index) {
-              return RecordCard(placeholderText: list[index]);
+              return RecordCard(
+                dateText: list[index].sentdate.toString(),
+                weightText: list[index].weight.toString(),
+                granularText: list[index].granular.toString(),
+              );
             },
           ),
         )

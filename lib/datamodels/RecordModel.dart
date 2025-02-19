@@ -1,4 +1,5 @@
 import "dart:convert";
+import 'dart:developer';
 import 'package:intl/intl.dart';
 
 Recordmodel recordmodelFromJson(String str) =>
@@ -19,11 +20,14 @@ class Recordmodel {
       required this.status,
       required this.weight});
 
-  factory Recordmodel.fromJson(Map<String, dynamic> json) => Recordmodel(
-      granular: json["granular"],
-      sentdate: json["sentdate"],
-      status: json["status"],
-      weight: json["weight"]);
+  factory Recordmodel.fromJson(Map<String, dynamic> json) {
+    log(json["granular"].toString());
+    return Recordmodel(
+        granular: json["granular"],
+        sentdate: DateTime.parse(json["sentdate"]),
+        status: json["status"],
+        weight: json["weight"]);
+  }
 
   Map<String, dynamic> toJson() => {
         "granular": granular,

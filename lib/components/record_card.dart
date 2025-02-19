@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
 class RecordCard extends StatelessWidget {
-  final String placeholderText;
+  final String weightText;
+  final String dateText;
+  final String granularText;
 
-  const RecordCard({Key? key, required this.placeholderText}) : super(key: key);
+  const RecordCard(
+      {Key? key,
+      required this.weightText,
+      required this.dateText,
+      required this.granularText})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,14 @@ class RecordCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(placeholderText),
+            Text(
+              dateText,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              weightText,
+            ),
+            Text(granularText),
             SizedBox(
               height: 5,
               width: finalWidth,
