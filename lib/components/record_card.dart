@@ -6,11 +6,10 @@ class RecordCard extends StatelessWidget {
   final String granularText;
 
   const RecordCard(
-      {Key? key,
+      {super.key,
       required this.weightText,
       required this.dateText,
-      required this.granularText})
-      : super(key: key);
+      required this.granularText});
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +33,21 @@ class RecordCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              dateText,
+              "Sent Date: $dateText",
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            Text(
-              weightText,
+            const SizedBox(
+              height: 5,
             ),
-            Text(granularText),
+            Text(
+              "Weight (in grams): $weightText",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Text("Granular: $granularText",
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             SizedBox(
               height: 5,
               width: finalWidth,

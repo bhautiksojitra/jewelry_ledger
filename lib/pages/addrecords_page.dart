@@ -1,14 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:jewelry_ledger/components/dropdown.dart';
 import 'package:jewelry_ledger/components/record_entry_form.dart';
 import 'package:jewelry_ledger/databases/helper.dart';
 import 'package:intl/intl.dart';
-import 'package:jewelry_ledger/datamodels/RecordModel.dart';
-import 'package:jewelry_ledger/datamodels/UsersModel.dart';
+import 'package:jewelry_ledger/models/AppSharedData.dart';
+import 'package:jewelry_ledger/models/FirebaseDataModel.dart';
 import 'package:provider/provider.dart';
 import 'package:quiver/strings.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -27,7 +23,10 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
   TextEditingController granularController = TextEditingController();
 
   void onDropdownChanged(String? value) {
-    Provider.of<UsersModel>(context, listen: false).updateSelectedUser(value!);
+    Provider.of<AppSharedData>(context, listen: false)
+        .updateSelectedUser(value!);
+    var firebaseService = FirebaseService();
+    firebaseService.queryEntireDatabase(context);
   }
 
   @override
@@ -88,18 +87,18 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
       var returnValue = await _showMyDialog("Success", "All entries are valid.",
           Icons.check_box, Colors.green, "Cancel", "Add");
 
-      if (returnValue == "Add" && !isBlank(UsersModel().SelectedUser)) {
+      if (returnValue == "Add" && !isBlank(AppSharedData().SelectedUserName)) {
         try {
-          var recordToAdd = Recordmodel(
-              granular: int.parse(granularController.text),
-              sentdate: DateTime.parse(dateController.text),
+          var recordToAdd = RecordEntry(
+              granular: granularController.text,
+              sentDate: dateController.text,
               status: "Sent",
               weight: int.parse(weightController.text));
 
           var firebaseService = FirebaseService();
 
           bool isRecordAdded = await firebaseService.addRecord(
-              UsersModel().SelectedUser, recordToAdd);
+              AppSharedData().SelectedUserName, recordToAdd);
 
           if (isRecordAdded) {
             resetEntryFields();
@@ -144,11 +143,11 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Center(
-            child: Consumer<UsersModel>(
+            child: Consumer<AppSharedData>(
           builder: (context, value, child) => DropdownMenuExample(
             label: "Select a name",
-            items: value.Users,
-            initSelect: value.SelectedUser,
+            items: value.FirebaseData.usersList,
+            initSelect: value.SelectedUserName,
             onChanged: onDropdownChanged,
           ),
         )),

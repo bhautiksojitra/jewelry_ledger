@@ -1,13 +1,12 @@
-import 'dart:developer';
-
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:jewelry_ledger/components/dropdown.dart';
 import 'package:jewelry_ledger/components/record_card.dart';
 import 'package:jewelry_ledger/databases/helper.dart';
-import 'package:jewelry_ledger/datamodels/RecordModel.dart';
-import 'package:jewelry_ledger/datamodels/UsersModel.dart';
+import 'package:jewelry_ledger/models/AppSharedData.dart';
+import 'package:jewelry_ledger/models/FirebaseDataModel.dart';
 import 'package:provider/provider.dart';
+import 'package:quiver/strings.dart';
 
 // Active Records Page
 class ActiveRecordsPage extends StatefulWidget {
@@ -19,11 +18,13 @@ class ActiveRecordsPage extends StatefulWidget {
 
 class _ActiveRecordsPageState extends State<ActiveRecordsPage> {
   final FirebaseService _firebaseService = FirebaseService();
-  List<Recordmodel> list = [];
+  List<RecordEntry> list = [];
   @override
   void initState() {
     super.initState();
-    log("Hi there, it's me bhautik");
+    var currentUser =
+        Provider.of<AppSharedData>(context, listen: false).SelectedUserName;
+    fectchRecords(currentUser);
   }
 
   // put fetch records in init state and onDropDownChanged.. however have a local variable to track if there is a change in values or Not
@@ -36,12 +37,15 @@ class _ActiveRecordsPageState extends State<ActiveRecordsPage> {
   }
 
   void onDropdownChanged(String? value) {
-    Provider.of<UsersModel>(context, listen: false).updateSelectedUser(value!);
+    Provider.of<AppSharedData>(context, listen: false)
+        .updateSelectedUser(value!);
     fectchRecords(value);
   }
 
   void fectchRecords(String userName) async {
-    var tempList = await _firebaseService.getRecordsByUserName(userName);
+    if (isBlank(userName)) return;
+
+    var tempList = _firebaseService.getRecordsByUserName(userName, context);
 
     setState(() {
       list = tempList;
@@ -56,11 +60,11 @@ class _ActiveRecordsPageState extends State<ActiveRecordsPage> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Center(
-            child: Consumer<UsersModel>(
+            child: Consumer<AppSharedData>(
           builder: (context, value, child) => DropdownMenuExample(
             label: "Select a name",
-            items: value.Users,
-            initSelect: value.SelectedUser,
+            items: value.FirebaseData.usersList,
+            initSelect: value.SelectedUserName,
             onChanged: onDropdownChanged,
           ),
         )),
@@ -70,7 +74,7 @@ class _ActiveRecordsPageState extends State<ActiveRecordsPage> {
             itemCount: list.length,
             itemBuilder: (content, index) {
               return RecordCard(
-                dateText: list[index].sentdate.toString(),
+                dateText: list[index].sentDate.toString(),
                 weightText: list[index].weight.toString(),
                 granularText: list[index].granular.toString(),
               );

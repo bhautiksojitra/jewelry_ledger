@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:jewelry_ledger/databases/helper.dart';
-import 'package:jewelry_ledger/datamodels/UsersModel.dart';
+import 'package:jewelry_ledger/models/AppSharedData.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
@@ -18,7 +18,7 @@ Future<void> main() async {
   FirebaseDatabase database = FirebaseDatabase.instance;
   runApp(
     ChangeNotifierProvider(
-      create: (context) => UsersModel(),
+      create: (context) => AppSharedData(),
       child: const MyApp(),
     ),
   );
@@ -61,13 +61,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    fetchPersons();
-  }
-
-  Future<void> fetchPersons() async {
-    final fetchedPersons = await _firebaseService.fetchUsers();
-    Provider.of<UsersModel>(context, listen: false)
-        .updatedUsersList(fetchedPersons);
+    _firebaseService.queryEntireDatabase(context);
   }
 
   @override
