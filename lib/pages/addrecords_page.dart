@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:jewelry_ledger/components/dropdown.dart';
 import 'package:jewelry_ledger/components/record_entry_form.dart';
@@ -25,8 +27,8 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
   void onDropdownChanged(String? value) {
     Provider.of<AppSharedData>(context, listen: false)
         .updateSelectedUser(value!);
-    var firebaseService = FirebaseService();
-    firebaseService.queryEntireDatabase(context);
+    //var firebaseService = FirebaseService();
+    //firebaseService.queryEntireDatabase(context);
   }
 
   @override
@@ -87,8 +89,13 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
       var returnValue = await _showMyDialog("Success", "All entries are valid.",
           Icons.check_box, Colors.green, "Cancel", "Add");
 
-      if (returnValue == "Add" && !isBlank(AppSharedData().SelectedUserName)) {
+      log("Hello World");
+      var selectedUser =
+          Provider.of<AppSharedData>(context, listen: false).SelectedUserName;
+
+      if (returnValue == "Add" && !isBlank(selectedUser)) {
         try {
+          log("Hello World");
           var recordToAdd = RecordEntry(
               granular: granularController.text,
               sentDate: dateController.text,
@@ -98,7 +105,7 @@ class _AddRecordsPageState extends State<AddRecordsPage> {
           var firebaseService = FirebaseService();
 
           bool isRecordAdded = await firebaseService.addRecord(
-              AppSharedData().SelectedUserName, recordToAdd);
+              selectedUser, recordToAdd, context);
 
           if (isRecordAdded) {
             resetEntryFields();

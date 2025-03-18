@@ -40,11 +40,11 @@ class FirebaseService {
     }
   }
 
-  Future<bool> addRecord(String personName, RecordEntry newValue) async {
-    print("Ia m here");
+  Future<bool> addRecord(
+      String personName, RecordEntry newValue, BuildContext context) async {
+    log("Ia m here");
     if (isBlank(personName)) {
-      print("No person selected");
-      log("No person selected");
+      log("Ia m here2");
       return false;
     }
 
@@ -58,14 +58,16 @@ class FirebaseService {
       final newRecordRef = _database.child('RecordDetails/$personName/$newId');
 
       // add record to new id
-      //newRecordRef.set(newValue.toJson());
+      newRecordRef.set(newValue.toJson());
+      Provider.of<AppSharedData>(context, listen: false)
+          .addRecordToSelectedUser(newId.toString(), newValue, personName);
       await lastIdRef.set(newId); // update last id ref
 
       // ADD LOG HERE
       return true;
     } catch (e) {
       // ADD LOGGER HERE
-      print("Error adding record: $e");
+      log("Error adding record: $e");
       return false;
     }
   }

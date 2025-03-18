@@ -56,4 +56,13 @@ class RecordEntry {
       status: json['status'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'sentdate': sentDate,
+      'weight': weight,
+      'granular': granular,
+      'status': status
+    };
+  }
 }

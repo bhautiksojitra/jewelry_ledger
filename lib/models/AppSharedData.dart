@@ -23,6 +23,11 @@ class AppSharedData extends ChangeNotifier {
     }
   }
 
+  void addRecordToSelectedUser(String key, RecordEntry entry, String userName) {
+    _firebaseData.recordDetails[userName]?.records[key] = entry;
+    notifyListeners();
+  }
+
   void updateFirebaseDataValue(FirebaseDataModel value) {
     if (_firebaseData != value) {
       _firebaseData = value;
